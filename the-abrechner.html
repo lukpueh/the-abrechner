@@ -1,0 +1,67 @@
+<head>
+  <title>the-abrechner</title>
+</head>
+
+<body>
+  <h1>The Urlaubs Abrechnungs Machine</h1>
+  <div>Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
+when it comes to partion of expenses. Well suffer no more!
+The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine.</div>
+
+    <h2>Who</h2>
+    <div>
+     <form class="new-person">
+        <input type="text" name="person" placeholder="Person" />
+        <input type="submit" value="Add"/>
+      </form>
+    </div>
+    <ul>
+      {{#each persons}}
+        {{> person}}
+      {{/each}}
+    </ul>
+    <h2>What</h2>
+    <div>
+     <form class="new-item">
+        <input type="text" name="item" placeholder="Item" />
+        <input type="text" name="amount" placeholder="Amount" />
+        <select name="person">
+        {{#each persons}}
+            <option value="{{this._id}}">{{name}}</option>
+        {{/each}}        
+        </select>
+        <input type="submit" value="Add"/>
+      </form>
+    </div>
+    <ul>
+      {{#each items}}
+      {{> item}}
+      {{/each}}
+    </ul>
+</body>  
+
+<template name="person">
+  <li>
+    {{name}}<button class="delete">&times;</button>
+  </li>
+</template>
+
+<template name="item">
+  <li>
+    {{title}}
+    {{paidBy.name}}
+    {{amount}}
+    <button class="delete">&times;</button>
+    {{#each shares}}
+        <div>
+            <form class="item-shares">
+            {{person.name}}
+            <input type="hidden" value="{{person._id}}">
+            <input type="range" onChange="$(this).closest('.item-shares').submit()" value="{{percent}}" min="0" max="100"/>
+            {{percent}}
+            </form>
+        </div>
+    {{/each}}
+  </li>
+</template>
+
