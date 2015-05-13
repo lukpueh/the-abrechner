@@ -1,28 +1,29 @@
 <head>
-  <title>the-abrechner</title>
+    <title>the-abrechner</title>
 </head>
 
 <body>
-  <h1>The Urlaubs Abrechnungs Machine</h1>
-  <div>Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
+    <h1>The Urlaubs Abrechnungs Machine</h1>
+    <!--   <div>Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
 when it comes to partion of expenses. Well suffer no more!
-The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine.</div>
+The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine.</div> -->
 
     <h2>Who</h2>
-    <div>
-     <form class="new-person">
+    <form class="new-person">
         <input type="text" name="person" placeholder="Person" />
         <input type="submit" value="Add"/>
-      </form>
-    </div>
+    </form>
+        
     <ul>
-      {{#each persons}}
-        {{> person}}
-      {{/each}}
+    {{#each persons}}
+        <li>
+            {{name}} <button class="delete-person">&times;</button>
+        </li>
+    {{/each}}
     </ul>
+
     <h2>What</h2>
-    <div>
-     <form class="new-item">
+    <form class="new-item">
         <input type="text" name="item" placeholder="Item" />
         <input type="text" name="amount" placeholder="Amount" />
         <select name="person">
@@ -31,37 +32,28 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
         {{/each}}        
         </select>
         <input type="submit" value="Add"/>
-      </form>
-    </div>
+    </form>
+
     <ul>
-      {{#each items}}
-      {{> item}}
-      {{/each}}
-    </ul>
-</body>  
-
-<template name="person">
-  <li>
-    {{name}}<button class="delete">&times;</button>
-  </li>
-</template>
-
-<template name="item">
-  <li>
-    {{title}}
-    {{paidBy.name}}
-    {{amount}}
-    <button class="delete">&times;</button>
-    {{#each shares}}
-        <div>
-            <form class="item-shares">
-            {{person.name}}
-            <input type="hidden" value="{{person._id}}">
-            <input type="range" onChange="$(this).closest('.item-shares').submit()" value="{{percent}}" min="0" max="100"/>
-            {{percent}}
-            </form>
-        </div>
+    {{#each items}}
+        <li>
+            {{title}} {{getPersonName paidBy}} {{amount}}
+            <button class="delete-item">&times;</button>
+            <div>
+            {{#each shares}}
+                <div>
+                    {{getPersonName person}} <input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked/>
+                </div>
+            {{/each}}
+            </div>
+        </li>      
     {{/each}}
-  </li>
-</template>
+    </ul>
+    <h2>Accounts</h2>
+    {{#each persons}}
+        <div>{{name}} paid {{hasPaid}} and wants to pay {{mustPay}}</div>
+    {{/each}}
+    <h2>Total Amounts</h2>
+        <div id="raphael-container"></div>
+</body>  
 
