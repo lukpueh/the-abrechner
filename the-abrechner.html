@@ -78,19 +78,23 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
             <div>
             {{#each shares}}
                 <div>
-                    {{personNameById person}} {{pays}}<input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">
+                    {{personNameById person}}<input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">
                 </div>
             {{/each}}
             </div>
         </li>      
     {{/each}}
     </ul>
-<!--     <h2>Accounts</h2>
-    {{#each persons}}
-        <div>{{name}} paid {{hasPaid}} and wants to pay {{mustPay}}</div>
+    <h2>Amounts per Item</h2>
+        <div id="raphael-container"></div>
+        {{pie}}
+
+    <h2>Break Down</h2>
+    <div>Total expenses: {{sum}}</div>
+    {{#each breakDown}}
+        <div>{{name}} paid {{paid}} and wants to pay {{pays}} which makes {{diff}}.</div>
     {{/each}}
-    <h2>Total Amounts</h2>
-        <div id="raphael-container"></div> -->
+
     <button class="delete-abrechnung">&times;</button>
 
 </template>  

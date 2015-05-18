@@ -27,29 +27,6 @@ if (Meteor.isClient) {
         return hash.toString();
     }
 
-
-    // window.onload = function() {
-    //     Paper = Raphael("raphael-container");
-    // // };
-    // var raph = function () {
-    //         Paper = Raphael("raphael-container");
-
-    //     Paper.clear();
-    //     var totalAmounts = [];
-    //     var totalItems = [];
-    //     Items.find({}).forEach(function(item){
-
-    //         totalAmounts.push(item.amount);
-    //         totalItems.push(item.title + " - %%.%%");
-    //     })
-    //     var chart = Paper.piechart(150, 150, 100, totalAmounts, 
-    //               { legend: totalItems, 
-    //                 legendpos: "east", 
-    //               });
-    // };
-    // Template.abrechner.rendered = raph;
-    // Template.abrechner.destroyed = raph;
-    
     Template.home.events({
         "submit .new-abrechner": function(event) {
             var title = event.target.title.value;
@@ -78,6 +55,71 @@ if (Meteor.isClient) {
             if (person)
                return person.name;
             return "Nobody";
+        },
+        sum: function(){
+            var sum = 0;
+            Items.find({"abrechnung": this._id}).forEach(function(item){
+                sum += item.amount;
+            });
+            return sum;
+        },
+        /*
+         * Return an array with all involved persons specifying 
+         * who paid what and who has to pay what.
+         */
+        breakDown: function() {
+            //Create an associative array for all involved persons, personId is Key
+            var persons = new Array(); 
+            Persons.find({"abrechnung": this._id}).forEach(function(person) {
+               return persons[person._id] = { "name": person.name, "paid": 0, "pays": 0};
+            });
+
+            //Go through all items and fill persons Array
+            Items.find({"abrechnung": this._id}).forEach(function(item){
+                //Add paid amount to paying person
+                persons[item.paidBy].paid += item.amount;
+
+                //Check how many persons want to pay and divide 
+                var divider = 0;
+                item.shares.forEach(function(share){
+                    if (share.pays)
+                        divider += 1;
+                });
+                var absShare = 0;
+                if (divider > 0)
+                    absShare = item.amount / divider;
+
+                //Add pays amount to all persons
+                item.shares.forEach(function(share){
+                    if (share.pays)
+                        persons[share.person].pays += absShare;
+                });
+            });
+            var result = new Array();
+            Object.keys(persons).forEach( function(key) { 
+                result.push({"name": persons[key].name, 
+                             "paid": persons[key].paid, 
+                             "pays": persons[key].pays,
+                             "diff": (persons[key].paid - persons[key].pays)});
+             });
+            return result;
+        },
+        pie: function(){
+            if (! Paper)
+                return false;
+
+            Paper.clear();
+            var totalAmounts = [];
+            var totalItems = [];
+            Items.find({"abrechnung": this._id}).forEach(function(item){
+                totalAmounts.push(item.amount);
+                totalItems.push(item.title + " - %%.%%");
+            })
+            var chart = Paper.piechart(150, 150, 100, totalAmounts, 
+                      { legend: totalItems, 
+                        legendpos: "east", 
+                      });
+            return false;
         }
     });
 
@@ -98,7 +140,6 @@ if (Meteor.isClient) {
             }
             Meteor.call("removePerson", personId);
         },
-
         // Add new item
         "submit .new-item": function (event) {
             var title = event.target.item.value;
@@ -130,29 +171,13 @@ if (Meteor.isClient) {
         }
     });
 
-    // Template.share.helpers({
-    //     person: function() {
-    //         return Persons.findOne(this.person);
-    //     }
-    // });
-    // Template.account.helpers({
-    //     hasPaid: function() {
-    //         var amount = 0;
-    //         Items.find({paidBy : this._id}).forEach(function(item){amount += item.amount});
-    //         return amount;
-    //     },
-    //     mustPay: function() {
-    //         var amount = 0;
-    //         var id = this._id;
-    //         Items.find({}).forEach(function(item){
-    //             item.shares.forEach(function(share){
-    //                 if (share.person == id)
-    //                     amount += share.amount;
-    //             });
-    //         });
-    //         return amount;
-    //     }
-    // });
+
+    Template.abrechner.onRendered(function(){
+        Paper = Raphael("raphael-container");
+    });
+    Template.abrechner.onDestroyed(function(){
+        console.log("destroyed");
+    });
 }
 
 if (Meteor.isServer) {
@@ -160,7 +185,6 @@ if (Meteor.isServer) {
         // code to run on server at startup
     });
 }
-
 
 Meteor.methods({
     addPerson: function(abrechnungsId, name){
