@@ -4,18 +4,45 @@
 
 <body>
     <h1>The Urlaubs Abrechnungs Machine</h1>
-    <!--   <div>Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
-when it comes to partion of expenses. Well suffer no more!
-The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine.</div> -->
+</body>
 
+<template name="home">
+
+    <div>Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
+when it comes to partion of expenses. Well suffer no more!
+The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine.
+    </div>
+    <form class="new-abrechner" method="post">
+        <label>
+            Title
+            <input type="text" name="title" placeholder="Title">
+        </label>
+        <label>
+            Description
+            <textarea name="description" placeholder="Description"></textarea>
+        </label>
+        <input type="submit" value="Create new Urlaubs Abrechner" >
+    </form>
+</template>  
+
+<template name="abrechner">
+    <h2>Link</h2>
+    You can access this page at {{urlFor 'abrechner'}}
+    <h2>Title</h2>
+    <div>{{title}}</div>
+    <h2>Description</h2>
+    <div>{{description}}</div>
     <h2>Who</h2>
-    <form class="new-person">
-        <input type="text" name="person" placeholder="Person" />
-        <input type="submit" value="Add"/>
+    <form class="new-person" method="post">
+        <label>
+            Person
+            <input type="text" name="person" placeholder="Person" >
+        </label>
+        <input type="submit" value="Add">
     </form>
         
     <ul>
-    {{#each persons}}
+    {{#each personsForAbrechnung}}
         <li>
             {{name}} <button class="delete-person">&times;</button>
         </li>
@@ -23,37 +50,48 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
     </ul>
 
     <h2>What</h2>
-    <form class="new-item">
-        <input type="text" name="item" placeholder="Item" />
-        <input type="text" name="amount" placeholder="Amount" />
-        <select name="person">
-        {{#each persons}}
-            <option value="{{this._id}}">{{name}}</option>
-        {{/each}}        
-        </select>
-        <input type="submit" value="Add"/>
+    <form class="new-item" method="post">
+        <label>
+            Title
+            <input type="text" name="item" placeholder="Item" >
+        </label>
+        <label>
+            Amount
+            <input type="text" name="amount" placeholder="Amount" >
+        </label>
+        <label>
+            Who paid
+            <select name="person">
+            {{#each personsForAbrechnung}}
+                <option value="{{_id}}">{{name}}</option>
+            {{/each}}        
+            </select>
+        </label>
+        <input type="submit" value="Add">
     </form>
 
     <ul>
-    {{#each items}}
+    {{#each itemsForAbrechnung}}
         <li>
-            {{title}} {{getPersonName paidBy}} {{amount}}
+            {{title}} {{personNameById paidBy}} {{amount}}
             <button class="delete-item">&times;</button>
             <div>
             {{#each shares}}
                 <div>
-                    {{getPersonName person}} <input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked/>
+                    {{personNameById person}} {{pays}}<input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">
                 </div>
             {{/each}}
             </div>
         </li>      
     {{/each}}
     </ul>
-    <h2>Accounts</h2>
+<!--     <h2>Accounts</h2>
     {{#each persons}}
         <div>{{name}} paid {{hasPaid}} and wants to pay {{mustPay}}</div>
     {{/each}}
     <h2>Total Amounts</h2>
-        <div id="raphael-container"></div>
-</body>  
+        <div id="raphael-container"></div> -->
+    <button class="delete-abrechnung">&times;</button>
+
+</template>  
 

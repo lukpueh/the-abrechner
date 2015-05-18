@@ -1,17 +1,44 @@
+Abrechnungs = new Mongo.Collection("abrechnungs");
+
 Persons = new Mongo.Collection("persons");
 Items = new Mongo.Collection("items");
 Paper = null;
 
+Router.map(function(){
+    this.route('home', {path: '/'} );
+    this.route('abrechner', {
+        path: '/:link',
+        data: function() {
+            var link = this.params.link;
+            return Abrechnungs.findOne({link: link});
+        }
+    });
+
+});
+
 if (Meteor.isClient) {
+    /*
+     * Create a hash5 link based on current Time and a random int
+     * For collision should be tested
+     */
+    function createLink() {
+        var rand = new Date().getTime().toString() + Math.floor(Math.random() * 10000 + 1).toString();
+        var hash = CryptoJS.MD5(rand);
+        return hash.toString();
+    }
+
 
     // window.onload = function() {
     //     Paper = Raphael("raphael-container");
-    // };
+    // // };
     // var raph = function () {
+    //         Paper = Raphael("raphael-container");
+
     //     Paper.clear();
     //     var totalAmounts = [];
     //     var totalItems = [];
     //     Items.find({}).forEach(function(item){
+
     //         totalAmounts.push(item.amount);
     //         totalItems.push(item.title + " - %%.%%");
     //     })
@@ -20,30 +47,46 @@ if (Meteor.isClient) {
     //                 legendpos: "east", 
     //               });
     // };
-    // Template.item.rendered = raph;
-    // Template.item.destroyed = raph;
+    // Template.abrechner.rendered = raph;
+    // Template.abrechner.destroyed = raph;
+    
+    Template.home.events({
+        "submit .new-abrechner": function(event) {
+            var title = event.target.title.value;
+            var description = event.target.description.value;
 
-    Template.body.helpers({
-        persons: function () {
-            return Persons.find();
+            //Link must be unique!!
+            do {
+                var link = createLink();
+            } while(Abrechnungs.find({"link" : link}).count() > 0)
+
+            Abrechnungs.insert({title: title, description: description, link: link, createdAt: new Date()});
+            Router.go('abrechner', {link: link});
+            return false;
+        }
+    });    
+
+    Template.abrechner.helpers({
+        personsForAbrechnung: function(){
+            return Persons.find({"abrechnung": this._id});
         },
-        items: function() {
-            return Items.find();
+        itemsForAbrechnung: function(){
+            return Items.find({"abrechnung": this._id});
         },
-        getPersonName: function(id) {
-            var person = Persons.findOne(id);
+        personNameById: function(personId) {
+            var person = Persons.findOne(personId);
             if (person)
-                return person.name;
+               return person.name;
             return "Nobody";
         }
     });
 
-    Template.body.events({
+    Template.abrechner.events({
+        // Add new Person
         "submit .new-person": function (event) {
             var name = event.target.person.value;
-            var personId = Persons.insert({name: name});
-            //console.log(Items.find({"shares.person" : {$not: personId}}).fetch());
-            Meteor.call("addSharePerson", personId);
+            Meteor.call("addPerson", this._id, name);
+            
             event.target.person.value = "";
             return false;
         },
@@ -53,28 +96,37 @@ if (Meteor.isClient) {
                 alert("Hey he has already paid");
                 return false;
             }
-            Meteor.call("removeSharePerson", personId);
-            Persons.remove(personId);
+            Meteor.call("removePerson", personId);
         },
+
+        // Add new item
         "submit .new-item": function (event) {
             var title = event.target.item.value;
             var amount = parseInt(event.target.amount.value);
             var personId = event.target.person.value;
-            var shares = Persons.find().map(function(p){return {person: p._id, pays: true} });
-            Items.insert({title: title, amount: amount, paidBy: personId, shares: shares });
+
+            Meteor.call("addItem", this._id, title, amount, personId);
+            
             event.target.item.value = "";
             event.target.amount.value = "";
             return false;
         },
         "click .delete-item": function () {
-            Items.remove(this._id);
+            var itemId = this._id;
+            Meteor.call("removeItem", itemId);
         },
+
         "change .pays-share": function(event) {
-            var itemId = $(event.target).data("parent-id");
+            var itemId = $(event.target).data("item-id");
             var personId = this.person;
             var checked = event.target.checked;
 
             Meteor.call("updateShare", itemId, personId, checked);
+        },
+        "click .delete-abrechnung": function(event) {
+            var abrechnungsId = this._id;
+            Meteor.call("removeAbrechnung", abrechnungsId);
+            Router.go('home');
         }
     });
 
@@ -111,14 +163,47 @@ if (Meteor.isServer) {
 
 
 Meteor.methods({
-    updateShare: function (itemId, personId, pays) {
-        Items.update({"_id" : itemId, "shares.person": personId}, {$set: {"shares.$.pays": pays}});
+    addPerson: function(abrechnungsId, name){
+        var personId = new Mongo.ObjectID()._str;
+        var personId = Persons.insert({"abrechnung": abrechnungsId, "name": name})
+        Items.update(
+            {"abrechnung": abrechnungsId},
+            {$push: {
+                "shares" : { 
+                    "person": personId, "pays" : true 
+                }}}, {multi: true})
     },
-    addSharePerson: function (personId) {
-        Items.update({}, {$push: {"shares" : { "person": personId, "pays" : true }}}, {multi: true});
-        // Items.update({"shares.person" : {$not: personId}}, {$push: {"shares" : { "person": personId, "pays" : true }}});
-    },
-    removeSharePerson: function (personId) {
+    removePerson: function(personId) {
         Items.update({}, {$pull: {"shares" : {"person" : personId}}}, {multi: true});
+        Persons.remove(personId);
+    },
+    addItem: function(abrechnungsId, title, amount, personId) {
+        //Create share array for all existing persons
+
+        var shares = Persons.find({"abrechnung" : abrechnungsId}).map(function(p){
+                                        return {
+                                                person: p._id, 
+                                                pays: true
+                                            }
+                                    });
+        Items.insert({"abrechnung": abrechnungsId,                         
+                        "title"  : title, 
+                        "amount" : amount, 
+                        "paidBy" : personId, 
+                        "shares" : shares })
+    },
+    removeItem: function(itemId) {
+        Items.remove(itemId);
+    },
+    updateShare: function (itemId, personId, pays) {
+        Items.update({
+            "_id" : itemId, 
+            "shares.person": personId
+        }, {$set: {"shares.$.pays": pays}});
+    },
+    removeAbrechnung: function(abrechnungsId) {
+        Items.remove({"abrechnung": abrechnungsId});
+        Persons.remove({"abrechnung": abrechnungsId});
+        Abrechnungs.remove(abrechnungsId);
     }
 });
