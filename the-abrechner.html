@@ -48,51 +48,54 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
         </li>
     {{/each}}
     </ul>
+    <div class="{{hasPersons}}">
 
-    <h2>What</h2>
-    <form class="new-item" method="post">
-        <label>
-            Title
-            <input type="text" name="item" placeholder="Item" >
-        </label>
-        <label>
-            Amount
-            <input type="text" name="amount" placeholder="Amount" >
-        </label>
-        <label>
-            Who paid
-            <select name="person">
-            {{#each personsForAbrechnung}}
-                <option value="{{_id}}">{{name}}</option>
-            {{/each}}        
-            </select>
-        </label>
-        <input type="submit" value="Add">
-    </form>
-
-    <ul>
-    {{#each itemsForAbrechnung}}
-        <li>
-            {{title}} {{personNameById paidBy}} {{amount}}
-            <button class="delete-item">&times;</button>
-            <div>
-            {{#each shares}}
+        <h2>What</h2>
+        <form class="new-item" method="post">
+            <label>
+                Title
+                <input type="text" name="item" placeholder="Item" >
+            </label>
+            <label>
+                Amount
+                <input type="text" name="amount" placeholder="Amount" >
+            </label>
+            <label>
+                Who paid
+                <select name="person">
+                {{#each personsForAbrechnung}}
+                    <option value="{{_id}}">{{name}}</option>
+                {{/each}}        
+                </select>
+            </label>
+            <input type="submit" value="Add">
+        </form>
+        <ul>
+        {{#each itemsForAbrechnung}}
+            <li>
+                {{title}} {{personNameById paidBy}} {{amount}}
+                <button class="delete-item">&times;</button>
                 <div>
-                    {{personNameById person}}<input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">
+                {{#each shares}}
+                    <div>
+                        {{personNameById person}}<input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">
+                    </div>
+                {{/each}}
                 </div>
-            {{/each}}
-            </div>
-        </li>      
-    {{/each}}
-    </ul>
-<!--     <h2>Amounts per Item</h2>
-        <div id="raphael-container"></div>
- -->
-    <h2>Break Down</h2>
-    <div>Total expenses: {{sum}}</div>
-    {{#each breakDown}}
-        <div>{{name}} paid {{paid}} and wants to pay {{pays}} which makes {{diff}}.</div>
-    {{/each}}
+            </li>      
+        {{/each}}
+        </ul>
+    </div>
+    <div class="{{hasItems}}">
+        <h2>Amounts per Item</h2>
+            <div id="raphael-container"></div>
+
+        <h2>Break Down</h2>
+        <div>Total expenses: {{sum}}</div>
+        {{#each breakDown}}
+            <div>{{name}} paid {{paid}} and wants to pay {{pays}} which makes {{diff}}.</div>
+        {{/each}}
+    </div>
 
     <button class="delete-abrechnung">&times;</button>
 
