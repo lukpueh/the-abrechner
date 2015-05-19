@@ -10,38 +10,60 @@ Router.map(function(){
         path: '/:link',
         data: function() {
             var link = this.params.link;
+            Session.set("link", link);
             return Abrechnungs.findOne({link: link});
         }
     });
-
 });
 
 if (Meteor.isClient) {
-    /*
-     * Create a hash5 link based on current Time and a random int
-     * For collision should be tested
-     */
-    function createLink() {
-        var rand = new Date().getTime().toString() + Math.floor(Math.random() * 10000 + 1).toString();
-        var hash = CryptoJS.MD5(rand);
-        return hash.toString();
-    }
+    Tracker.autorun(function () {
+        var link = Session.get("link");
+        if (link != 'undefined' && link != null) {
+            Meteor.subscribe("abrechnungs", link);
+            Meteor.subscribe("items", link);
+            Meteor.subscribe("persons", link);
+        }
+    });
 
     Template.home.events({
         "submit .new-abrechner": function(event) {
             var title = event.target.title.value;
             var description = event.target.description.value;
-
-            //Link must be unique!!
-            do {
-                var link = createLink();
-            } while(Abrechnungs.find({"link" : link}).count() > 0)
-
-            Abrechnungs.insert({title: title, description: description, link: link, createdAt: new Date()});
-            Router.go('abrechner', {link: link});
+            Meteor.call("addAbrechner", title, description, function(err, link){
+                Router.go('abrechner', {"link": link});
+            });
             return false;
         }
-    });    
+    });
+
+
+    function drawPie(items){
+  
+    }
+
+    // Draw pie if container rendered for the first time
+    // Template.abrechner.onRendered(function(){
+    //     Paper = Raphael("raphael-container");
+    //     var data = this.data;
+    //     var abId = data._id;
+    //     Deps.autorun(function(){
+    //         console.log(data);
+    //         console.log(abId);
+    //         var items = Items.find().fetch();
+    //         // Paper.clear();
+    //         // var totalAmounts = [];
+    //         // var totalItems = [];
+    //         // items.forEach(function(item){
+    //         //     totalAmounts.push(item.amount);
+    //         //     totalItems.push(item.title + " - %%.%%");
+    //         // });
+    //         // var chart = Paper.piechart(150, 150, 100, totalAmounts, {
+    //         //     legend: totalItems, 
+    //         //     legendegendpos: "east", 
+    //         // });  
+    //     });
+    // });
 
     Template.abrechner.helpers({
         personsForAbrechnung: function(){
@@ -104,23 +126,7 @@ if (Meteor.isClient) {
              });
             return result;
         },
-        pie: function(){
-            if (! Paper)
-                return false;
 
-            Paper.clear();
-            var totalAmounts = [];
-            var totalItems = [];
-            Items.find({"abrechnung": this._id}).forEach(function(item){
-                totalAmounts.push(item.amount);
-                totalItems.push(item.title + " - %%.%%");
-            })
-            var chart = Paper.piechart(150, 150, 100, totalAmounts, 
-                      { legend: totalItems, 
-                        legendpos: "east", 
-                      });
-            return false;
-        }
     });
 
     Template.abrechner.events({
@@ -170,25 +176,43 @@ if (Meteor.isClient) {
             Router.go('home');
         }
     });
-
-
-    Template.abrechner.onRendered(function(){
-        Paper = Raphael("raphael-container");
-    });
-    Template.abrechner.onDestroyed(function(){
-        console.log("destroyed");
-    });
 }
 
 if (Meteor.isServer) {
-    Meteor.startup(function () {
-        // code to run on server at startup
+
+    Meteor.publish("abrechnungs", function (link) {
+        return Abrechnungs.find({"link":link});
+    });
+    Meteor.publish("items", function (link) {
+        return Items.find();
+    });
+    Meteor.publish("persons", function (link) {
+        return Persons.find();
     });
 }
 
 Meteor.methods({
+    /*
+     * Create a hash5 link based on current Time and a random int
+     * For collision should be tested
+     */
+    _createLink: function() {
+        //Link must be unique!!
+        do {
+            var rand = new Date().getTime().toString() + Math.floor(Math.random() * 10000 + 1).toString();
+            var hash = CryptoJS.MD5(rand);
+            var link = hash.toString();
+        } while(Abrechnungs.find({"link" : link}).count() > 0)
+
+        return link;
+    },
+    addAbrechner: function(title, description) {
+
+        var link =  Meteor.call("_createLink");
+        Abrechnungs.insert({"title": title, "description": description, "link": link, createdAt: new Date()});
+        return link;
+    },
     addPerson: function(abrechnungsId, name){
-        var personId = new Mongo.ObjectID()._str;
         var personId = Persons.insert({"abrechnung": abrechnungsId, "name": name})
         Items.update(
             {"abrechnung": abrechnungsId},
