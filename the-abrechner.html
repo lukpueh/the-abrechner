@@ -2,16 +2,21 @@
     <title>the-abrechner</title>
 </head>
 
-<body>
-    <h1>The Urlaubs Abrechnungs Machine</h1>
-</body>
+<template name="main">
+    <div class="container">
+        <div class="page-header">
+            <h1>The Urlaubs Abrechnungs Machine.</h1>
+        </div>
+        {{> yield}}
+    </div>
+</template>
 
 <template name="home">
 
-    <div>Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
+    <p class="lead">Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
 when it comes to partion of expenses. Well suffer no more!
 The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine.
-    </div>
+    </p>
     <form class="new-abrechner" method="post">
         <label>
             Title
@@ -21,83 +26,102 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
             Description
             <textarea name="description" placeholder="Description"></textarea>
         </label>
-        <input type="submit" value="Create new Urlaubs Abrechner" >
+        <input class="btn btn-primary" type="submit" value="Create new Urlaubs Abrechner" >
     </form>
 </template>  
 
 <template name="abrechner">
-    <h2>Link</h2>
-    You can access this page at {{urlFor 'abrechner'}}
-    <h2>Title</h2>
-    <div>{{title}}</div>
-    <h2>Description</h2>
-    <div>{{description}}</div>
-    <h2>Who</h2>
+    <h2>{{title}}</h2>
+    <p class="lead">{{description}}</p>
+
+    <div class="well">
+        You can access this page at {{urlFor 'abrechner'}}
+    </div>
+
+    <h3>Who</h3>
     <form class="new-person" method="post">
         <label>
             Person
             <input type="text" name="person" placeholder="Person" >
         </label>
-        <input type="submit" value="Add">
+        <input class="btn btn-primary" type="submit" value="Add">
     </form>
         
     <ul>
     {{#each personsForAbrechnung}}
         <li>
-            {{name}} <button class="delete-person">&times;</button>
+            {{name}} <button class="delete-person btn btn-danger">Delete Person</button>
         </li>
     {{/each}}
     </ul>
     <div class="{{hasPersons}}">
-
-        <h2>What</h2>
+        <h3>What</h3>
         <form class="new-item" method="post">
-            <label>
-                Title
-                <input type="text" name="item" placeholder="Item" >
-            </label>
-            <label>
-                Amount
-                <input type="text" name="amount" placeholder="Amount" >
-            </label>
-            <label>
-                Who paid
-                <select name="person">
-                {{#each personsForAbrechnung}}
-                    <option value="{{_id}}">{{name}}</option>
-                {{/each}}        
-                </select>
-            </label>
-            <input type="submit" value="Add">
-        </form>
-        <ul>
-        {{#each itemsForAbrechnung}}
-            <li>
-                {{title}} {{personNameById paidBy}} {{amount}}
-                <button class="delete-item">&times;</button>
-                <div>
-                {{#each shares}}
-                    <div>
-                        {{personNameById person}}<input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">
-                    </div>
-                {{/each}}
+            <div class="row">
+                <div class="col-md-3">
+                    <label>
+                        <div>Title:</div>
+                        <input type="text" name="item" placeholder="Item" >
+                    </label>
                 </div>
-            </li>      
+                <div class="col-md-3">
+                    <label>
+                        <div>Amount:</div>
+                        <input type="text" name="amount" placeholder="Amount" >
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        <div>Who paid:</div>
+                        <select name="person">
+                        {{#each personsForAbrechnung}}
+                            <option value="{{_id}}">{{name}}</option>
+                        {{/each}}        
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Add">
+        </form>
+
+
+        <div class="panel-group" role="tablist" aria-multiselectable="true">
+        {{#each itemsForAbrechnung}}
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a data-toggle="collapse" href="#itemColl{{_id}}" aria-expanded="false" aria-controls="itemColl{{_id}}">
+                            {{title}} {{personNameById paidBy}} {{amount}}
+                            </a>
+                        </div>
+                        <div class="col-md-3"><button class="delete-item btn btn-danger">Delete Item</button></div>
+                    </div>
+                </div>
+                <div id="itemColl{{_id}}" class="panel-collapse collapse in" role="tabpanel" aria-expanded="false">
+                     <ul class="list-group">
+                        {{#each shares}}
+                            <li class="list-group-item">
+                                {{personNameById person}}<input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>     
         {{/each}}
-        </ul>
+        </div>
     </div>
     <div class="{{hasItems}}">
-        <h2>Amounts per Item</h2>
-            <div id="raphael-container"></div>
+        <h3>Break Down</h3>
 
-        <h2>Break Down</h2>
         <div>Total expenses: {{sum}}</div>
         {{#each breakDown}}
             <div>{{name}} paid {{paid}} and wants to pay {{pays}} which makes {{diff}}.</div>
         {{/each}}
+        <div id="raphael-container"></div>
     </div>
 
-    <button class="delete-abrechnung">&times;</button>
+    <button  class="delete-abrechnung btn btn-danger">Delete Abrechnung</button>
 
 </template>  
 

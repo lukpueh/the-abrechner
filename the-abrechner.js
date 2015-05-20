@@ -1,9 +1,10 @@
 Abrechnungs = new Mongo.Collection("abrechnungs");
-
 Persons = new Mongo.Collection("persons");
 Items = new Mongo.Collection("items");
-Paper = null;
 
+Router.configure({
+    layoutTemplate: 'main'
+});
 Router.map(function(){
     this.route('home', {path: '/'} );
     this.route('abrechner', {
@@ -40,17 +41,17 @@ if (Meteor.isClient) {
 
     // Draw pie if container rendered for the first time
     Template.abrechner.onRendered(function(){
-        Paper = Raphael("raphael-container");
+        var paper = Raphael("raphael-container");
         Tracker.autorun(function(){
             var items = Items.find().fetch();
-            Paper.clear();
+            paper.clear();
             var totalAmounts = [];
             var totalItems = [];
             items.forEach(function(item){
                 totalAmounts.push(item.amount);
                 totalItems.push(item.title + " - %%.%%");
             });
-            var chart = Paper.piechart(150, 150, 100, totalAmounts, {
+            var chart = paper.piechart(150, 150, 100, totalAmounts, {
                 legend: totalItems, 
                 legendegendpos: "east", 
             });  
