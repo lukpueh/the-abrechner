@@ -1,5 +1,123 @@
 /* CSS declarations go here */
 
-.hidden {
-    display:none;
+body {
+    background: url(body.png); 
+    text-shadow:1px 1px 1px #fff;
+    font-family: 'Pathway Gothic One', sans-serif;
+}
+.container {
+    margin: 15px auto;
+    max-width:600px;
+}
+
+.page-header {
+    margin-bottom: 0;
+    margin-top:0;
+    top:-35px;
+    position: relative;
+    border-bottom: 1px dotted lightgray; 
+}
+
+.page-body {
+    -webkit-box-shadow: 0 1px 3px 0px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow:    0 1px 3px 0px rgba(0, 0, 0, 0.4);
+    box-shadow:         0 1px 3px 0px rgba(0, 0, 0, 0.4);   
+    background: #fafafa; 
+    padding:15px;
+    border-radius: 4px;
+}
+
+.page-footer {
+    padding: 15px;
+    color:#ccc;
+}
+
+label, input, button, select {
+    width: 100%;
+}
+input[type="checkbox"] {
+    margin-right: 12px;
+    width:auto;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+#logo {
+     font-size:4em;
+     color:#ddd;
+}
+
+.item .panel-heading {
+    padding:0;
+}
+
+.item-inner {
+    padding: 10px 15px;
+}
+
+.item-inner .glyphicon {
+    padding-top: 2px;
+}
+
+.item a, .item a:hover, .item a:active, .item a:visited, .item a:focus {
+    color:black;
+    text-decoration:none;
+}
+
+h1 {
+    color:lightgray;
+}
+h3 {
+    border-top:1px dotted lightgray;
+    padding-top: 10px;
+    color:lightgray;
+}
+
+.padded-item-horizontal {
+    padding-left:12px;
+    padding-right:12px;
+}
+
+.padded-item-vertical {
+    padding-top:6px;
+    padding-bottom:6px;
+}
+
+table.dataTable > tbody > tr {
+    background-color: transparent;
+}
+table.dataTable > tbody > tr:first-child > td {
+    border-top: none;
+} 
+table.dataTable > thead > tr > th:first-child,
+table.dataTable > tbody > tr > td:first-child,
+table.dataTable > tfoot > tr > th:first-child {
+    padding-left:12px;
+}
+table.dataTable > thead > tr > th:last-child,
+table.dataTable > tbody > tr > td:last-child,
+table.dataTable > tfoot > tr > th:last-child {
+    padding-right:12px;
+}
+table.dataTable > thead > tr > th {
+    color:lightgray;
+    padding:10px;
+}
+table.dataTable > tfoot > tr > th {
+    padding:10px;
+    font-size: 1.5em;
+}
+
+.person .glyphicon.glyphicon-user {
+    padding-right: 6px;
+}
+
+.break {
+    word-wrap: break-word;
+}
+
+#raphael-container > svg {
+    width: 100%;
 }

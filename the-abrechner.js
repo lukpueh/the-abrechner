@@ -39,25 +39,6 @@ if (Meteor.isClient) {
         }
     });
 
-    // Draw pie if container rendered for the first time
-    Template.abrechner.onRendered(function(){
-        var paper = Raphael("raphael-container");
-        Tracker.autorun(function(){
-            var items = Items.find().fetch();
-            paper.clear();
-            var totalAmounts = [];
-            var totalItems = [];
-            items.forEach(function(item){
-                totalAmounts.push(item.amount);
-                totalItems.push(item.title + " - %%.%%");
-            });
-            var chart = paper.piechart(150, 150, 100, totalAmounts, {
-                legend: totalItems, 
-                legendegendpos: "east", 
-            });  
-        });
-    });
-
     Template.abrechner.helpers({
         personsForAbrechnung: function(){
             return Persons.find();
@@ -66,12 +47,12 @@ if (Meteor.isClient) {
             return Items.find();
         },
         hasPersons: function() {
-            if (! Persons.find().count())
-                return "hidden";
+            if (Persons.find().count())
+                return true;
         },
         hasItems: function() {
-            if (! Items.find().count())
-                return "hidden";
+            if (Items.find().count())
+                return true;
         },
         personNameById: function(personId) {
             var person = Persons.findOne(personId);
@@ -182,6 +163,25 @@ if (Meteor.isClient) {
             Meteor.call("removeAbrechnung", link, abrechnungsId);
             Router.go('home');
         }
+    });
+
+    // Draw pie if container rendered for the first time
+    Template.raphael.onRendered(function(){
+        var paper = Raphael("raphael-container");
+        Tracker.autorun(function(){
+            var items = Items.find().fetch();
+            paper.clear();
+            var totalAmounts = [];
+            var totalItems = [];
+            items.forEach(function(item){
+                totalAmounts.push(item.amount);
+                totalItems.push(item.title + " - %%.%%");
+            });
+            var chart = paper.piechart(150, 150, 100, totalAmounts, {
+                legend: totalItems, 
+                legendegendpos: "east", 
+            });  
+        });
     });
 }
 
