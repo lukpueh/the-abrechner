@@ -19,6 +19,7 @@ Router.map(function(){
 });
 
 if (Meteor.isClient) {
+
     Tracker.autorun(function () {
         var link = Session.get("link");
         if (typeof link != 'undefined' && link != null) {
@@ -167,7 +168,8 @@ if (Meteor.isClient) {
 
     // Draw pie if container rendered for the first time
     Template.raphael.onRendered(function(){
-        var paper = Raphael("raphael-container");
+        var paperH = 300, paperW = 300
+        var paper = Raphael("raphael-container", paperW, paperH);
         Tracker.autorun(function(){
             var items = Items.find().fetch();
             paper.clear();
@@ -175,12 +177,14 @@ if (Meteor.isClient) {
             var totalItems = [];
             items.forEach(function(item){
                 totalAmounts.push(item.amount);
-                totalItems.push(item.title + " - %%.%%");
+                totalItems.push(item.title + " - € " + item.amount);
             });
             var chart = paper.piechart(150, 150, 100, totalAmounts, {
                 legend: totalItems, 
-                legendegendpos: "east", 
+                legendpos: "south", 
             });  
+            var legendH = $("#raphael-container svg text").height() * items.length;
+            paper.setSize(paperW, paperH + legendH)
         });
     });
 }

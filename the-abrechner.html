@@ -1,8 +1,20 @@
 <head>
-    <title>the-abrechner</title>
+    <title>The Urlaubs Abrechnungs Machine</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
+
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 </head>
 
 <template name="main">
@@ -24,24 +36,28 @@
 
 <template name="home">
     <p class="lead">Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
-when it comes to partion of expenses. Well suffer no more!
-The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine.
+when it comes to partion of expenses. Well, suffer no more!
+The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine. By the way, you can use this for other shared accounts too, yeah!
     </p>
     <form class="new-abrechner" method="post">
-        <label>
-            Title
-            <input type="text" name="title" placeholder="Title">
-        </label>
-        <label>
-            Description
-            <textarea name="description" placeholder="Description"></textarea>
-        </label>
-        <input class="btn btn-primary" type="submit" value="Create new Urlaubs Abrechner" >
+        <div class="form-group">
+
+            <label>
+                <span class="sr-only">Title</span>
+                <input type="text" name="title" placeholder="Title">
+            </label>
+            <label>
+                <span class="sr-only">Description (optional)</span>
+                <textarea name="description" placeholder="Description (optional)"></textarea>
+            </label>
+            <input class="btn btn-default" type="submit" value="Create new Urlaubs Abrechner" >
+        </div>
     </form>
 </template>  
 
 <template name="abrechner">
     <div class="well break text-center" id="issueUrl">
+        <span class="btn-clipboard pointer">Select</span>
         You can access this page at {{urlFor 'abrechner'}}
     </div>
 
@@ -61,7 +77,7 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
                     </label>
                 </div>
                 <div class="col-sm-3">
-                    <input class="btn btn-default" type="submit" value="Add">
+                    <input class="btn btn-default padded-item-vertical" type="submit" value="Add">
                 </div>
             </div>
         </div>
@@ -87,7 +103,10 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
                     <div class="col-sm-3">
                         <label>
                             <span class="sr-only">Costs</span>
-                            <input type="text" name="amount" placeholder="Cost" class="form-control">
+                            <div class="input-group">
+                                <span class="input-group-addon">&euro;</span>
+                                <input type="text" name="amount" placeholder="Cost" class="form-control">
+                            </div>
                         </label>
                     </div>
                     <div class="col-sm-3">
@@ -100,8 +119,8 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
                             </select>
                         </label>
                     </div>
-                    <div class="col-sd-3">
-                        <input class="btn btn-default" type="submit" value="Add">
+                    <div class="col-sm-3">
+                        <input class="btn btn-default padded-item-vertical" type="submit" value="Add">
                     </div>
                 </div>
             </div>
@@ -113,7 +132,7 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
             <div class="panel panel-default item">
                 <div class="panel-heading" role="tab">
                     <a data-toggle="collapse" href="#itemColl{{_id}}" aria-expanded="false" aria-controls="itemColl{{_id}}">
-                        <div class="item-inner">{{personNameById paidBy}} paid {{amount}} for '{{title}}'<span class="glyphicon glyphicon-remove delete-item text-danger pull-right pointer" aria-hidden="true"></span></div>
+                        <div class="item-inner">{{personNameById paidBy}} paid &euro; {{amount}} for '{{title}}'<span class="glyphicon glyphicon-remove delete-item text-danger pull-right pointer" aria-hidden="true"></span></div>
                     </a>
                 </div>
                 <div id="itemColl{{_id}}" class="panel-collapse collapse" role="tabpanel" aria-expanded="false">
@@ -146,9 +165,9 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
                     {{#each breakDown}}
                     <tr>
                         <td>{{name}}</td>
-                        <td>{{diff}}</td>
-                        <td>{{pays}}</td>
-                        <td>{{paid}}</td>
+                        <td>&euro; {{diff}}</td>
+                        <td>&euro; {{pays}}</td>
+                        <td>&euro; {{paid}}</td>
                     </tr>
                     {{/each}}
 
@@ -168,5 +187,7 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
 
 </template>  
 <template name="raphael">
-    <div id="raphael-container"></div>
+    <div class="text-center">
+        <div id="raphael-container"></div>
+    </div>
 </template>  
