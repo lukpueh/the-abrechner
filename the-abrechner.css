@@ -13,11 +13,11 @@ body {
 }
 
 .page-header {
-    margin-bottom: 0;
-    margin-top:0;
-    top:-35px;
+    margin-bottom: 0 !important;
+    margin-top:0 !important;
+    top:-35px !important;
     position: relative;
-    border-bottom: 1px dotted lightgray; 
+    border-bottom: 1px dotted lightgray !important; 
 }
 
 .page-body {
@@ -34,8 +34,12 @@ body {
     color:#ccc;
 }
 
-label, input, button, select {
+label, input, button.btn, select {
     width: 100%;
+}
+
+button.btn-danger {
+    padding: 0;
 }
 
 input[type='submit'] {
@@ -95,24 +99,8 @@ h3 {
 table.dataTable > tbody > tr {
     background-color: transparent;
 }
-table.dataTable > tbody > tr:first-child > td {
-    border-top: none;
-} 
-table.dataTable > thead > tr > th:first-child,
-table.dataTable > tbody > tr > td:first-child,
-table.dataTable > tfoot > tr > th:first-child {
-    padding-left:12px;
-}
-table.dataTable > thead > tr > th:last-child,
-table.dataTable > tbody > tr > td:last-child,
-table.dataTable > tfoot > tr > th:last-child {
-    padding-right:12px;
-}
-table.dataTable > thead > tr > th {
-    color:lightgray;
-    padding:10px;
-}
-table.dataTable > tfoot > tr > th {
+
+#sums {
     padding:10px;
     font-size: 1.5em;
 }
@@ -125,11 +113,18 @@ table.dataTable > tfoot > tr > th {
     word-wrap: break-word;
 }
 
-#issueUrl {
+#urlContainer {
     position: relative;
+    padding: 10px 50px;
 }
-
-.btn-clipboard {
+#url {
+    border: 0;
+    background: inherit
+}
+#url:focus {
+    background-color: white;
+}
+.mark-url {
   position: absolute;
   top: 0;
   right: 0;
@@ -137,6 +132,12 @@ table.dataTable > tfoot > tr > th {
   font-size: 0.9em;
   color: #767676;
   background-color: #fff;
-  border: 1px solid #e1e1e8;
+  border-left: 1px solid #e1e1e8;
+  border-bottom: 1px solid #e1e1e8;
   border-radius: 0 4px 0 4px;
+}
+
+.modal-content {
+    background: url(body.png); 
+    font-size: 1.2em;
 }

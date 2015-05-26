@@ -30,25 +30,45 @@
         <div class="page-body">
             {{> yield}}
         </div>
-        <div class="page-footer text-center">Fellow designer's note: If you are a Russian, ruin your perfect friendship by using this tool!</div>
+        <div class="page-footer text-center">
+            <a href="" data-toggle="modal" data-target="#disclaimerModal">Disclaimer</a>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="disclaimerModal" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="glyphicon glyphicon-remove pull-right pointer" aria-hidden="true"></span></button>
+                <h4 class="modal-title">Disclaimer</h4>
+              </div>
+              <div class="modal-body">
+                <p>This tool is free to use for everyone. We do not guarantee though that its use does not result in distrust or bloodshed.</p>
+                <p>If you have any questions or feature requests, contact us at this <a id="email" href="">email address</a> or visit us at us at <a href="https://github.com/lukpueh/the-abrechner">github</a>.</p>
+                <p>Special thanks go to my fellow designer Oleg and his awesome CSS skills!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
     </div>
 </template>
 
 <template name="home">
-    <p class="lead">Who doesn't know this? What began as nice innocent holidays with beloved friends ends in distrust and even bloodshed
+    <p>Who doesn't know this? What began as nice innocent holidays with your good friends ends in distrust and even bloodshed
 when it comes to partion of expenses. Well, suffer no more!
 The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs Machine. By the way, you can use this for other shared accounts too, yeah!
     </p>
     <form class="new-abrechner" method="post">
         <div class="form-group">
-
             <label>
                 <span class="sr-only">Title</span>
-                <input type="text" name="title" placeholder="Title">
+                <input type="text" class="form-control" name="title" placeholder="Title">
             </label>
             <label>
                 <span class="sr-only">Description (optional)</span>
-                <textarea name="description" placeholder="Description (optional)"></textarea>
+                <textarea name="description" class="form-control" placeholder="Description (optional)"></textarea>
             </label>
             <input class="btn btn-default" type="submit" value="Create new Urlaubs Abrechner" >
         </div>
@@ -56,9 +76,9 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
 </template>  
 
 <template name="abrechner">
-    <div class="well break text-center" id="issueUrl">
-        <span class="btn-clipboard pointer">Select</span>
-        You can access this page at {{urlFor 'abrechner'}}
+    <div class="well text-center" id="urlContainer">
+        <span class="btn-default pointer mark-url">Select URL</span>
+        You can access this Abrechung  at: <input class="text-center" type="text" id="url" value="{{urlFor 'abrechner'}}"/>
     </div>
 
     <div class="text-center">
@@ -90,7 +110,7 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
     </div>
 
     {{#if hasPersons}}
-        <h3>Add the items that where bought and the payer…</h3>
+        <h3>Add the items that were bought and the payer…</h3>
         <form class="new-item" method="post">
             <div class="form-group">
                 <div class="row">
@@ -113,6 +133,7 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
                         <label>
                             <span class="sr-only">Who paid</span>
                             <select name="person" class="form-control">
+                                <option disabled selected> -- who paid? -- </option>
                             {{#each personsForAbrechnung}}
                                 <option value="{{_id}}">{{name}}</option>
                             {{/each}}        
@@ -125,8 +146,10 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
                 </div>
             </div>
         </form>
+    {{/if}}
 
-
+    {{#if hasItems}}
+        <h3>Click on an Item to opt a person out of the payment...</h3>
         <div class="panel-group" role="tablist" aria-multiselectable="true">
         {{#each itemsForAbrechnung}}
             <div class="panel panel-default item">
@@ -147,47 +170,74 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
             </div>     
         {{/each}}
         </div>
+        {{> breakdown}}
     {{/if}}
-    {{#if hasItems}}
-        <h3>Check out who's getting and who's paying...</h3>
-        <div class="row">
-            <div class="col-sm-12">
-                <table id="breakdownTable" class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>name</th>
-                            <th>account</th>
-                            <th>wants to pay</th>
-                            <th>has paid</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {{#each breakDown}}
-                    <tr>
-                        <td>{{name}}</td>
-                        <td>&euro; {{diff}}</td>
-                        <td>&euro; {{pays}}</td>
-                        <td>&euro; {{paid}}</td>
-                    </tr>
-                    {{/each}}
-
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="3" style="text-align:right">Total:</th>
-                            <th></th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>  
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirm-delete">
+        Delete Abrechnung
+    </button>
+    <!-- Confirm Delete Abrechnung -->
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Delete Abrechnung</h4>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure that you want to delete this Abrechnung? You will never ever ever ever be able to access it again. Never!</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="delete-abrechnung btn btn-danger" onCLick="$('#confirm-delete').modal('hide')">Delete forever</button>
+          </div>
         </div>
-        {{> raphael}}
-    {{/if}}
-    <button class="delete-abrechnung btn btn-danger">Delete Abrechnung</button>
-
+      </div>
+    </div>
 </template>  
-<template name="raphael">
+<template name="breakdown">
+   <h3>Check out who's getting and who's paying...</h3>
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="breakdownTable" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>has paid</th>
+                        <th>wants to pay</th>
+                        <th>ACCOUNT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {{#each calcs}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td>&euro; {{paid}}</td>
+                    <td>&euro; {{pays}}</td>
+                    <td class="{{diffClass diff}}">&euro; {{diff}}</td>
+                </tr>
+                {{/each}}
+
+                </tbody>
+            </table>
+        </div>  
+    </div>
+    <div id="sums">Total expenses: &euro; {{sum}} </div>
     <div class="text-center">
         <div id="raphael-container"></div>
     </div>
 </template>  
+<template name="message">
+    <div class="message alert alert-danger alert-dismissible" role="alert" style="display:none">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{text}}
+    </div>
+</template>
+
+
+<template name="notFound">
+    <p class="text-center">
+        Oops, we could not find anything here. Maybe you want to 
+        <a href="{{pathFor 'home'}}" alt="create new abrechnung">create a new Abrechnung</a>?
+    </p>
+</template>
