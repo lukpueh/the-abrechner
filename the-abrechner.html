@@ -149,7 +149,7 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
     {{/if}}
 
     {{#if hasItems}}
-        <h3>Click on an Item to opt a person out of the payment...</h3>
+        <h3>Click on an item to opt-out a person of the payment...</h3>
         <div class="panel-group" role="tablist" aria-multiselectable="true">
         {{#each itemsForAbrechnung}}
             <div class="panel panel-default item">
@@ -207,15 +207,6 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
                     </tr>
                 </thead>
                 <tbody>
-                {{#each calcs}}
-                <tr>
-                    <td>{{name}}</td>
-                    <td>&euro; {{paid}}</td>
-                    <td>&euro; {{pays}}</td>
-                    <td class="{{diffClass diff}}">&euro; {{diff}}</td>
-                </tr>
-                {{/each}}
-
                 </tbody>
             </table>
         </div>  

@@ -98,7 +98,10 @@ if (Meteor.isClient) {
         },
         personNameById: function(personId) {
             var person = Persons.findOne(personId);
-            return person.name;
+            if (person)
+                return person.name;
+            else
+                return "";
         }
     });
 
@@ -152,7 +155,7 @@ if (Meteor.isClient) {
 
             var link = Session.get("link");
             var title = event.target.item.value;
-            var amount = event.target.amount.value;
+            var amount = event.target.amount.value.replace(",",".");
             var personId = event.target.person.value;
 
             var message = "";
@@ -202,63 +205,20 @@ if (Meteor.isClient) {
         }
     });
 
+
+
+
+
     Template.breakdown.onRendered(function(){
         //Datatables
-        $('#breakdownTable').DataTable({
+       var table = $('#breakdownTable').dataTable({
             "ordering": true,
             "paging": false,
             "info" : false,
-            "bFilter": false
-        });
+            "bFilter": false,
+        }).api();
 
-        // Draw pie if container rendered for the first time
-        var paperH = 300, paperW = 300
-        var paper = Raphael("raphael-container", paperW, paperH);
-        Tracker.autorun(function(){
-            var items = Items.find().fetch();
-            paper.clear();
-            var totalAmounts = [];
-            var totalItems = [];
-            items.forEach(function(item){
-                totalAmounts.push(item.amount);
-                totalItems.push(item.title + " - € " + item.amount);
-            });
-            var chart = paper.piechart(150, 150, 100, totalAmounts, {
-                legend: totalItems, 
-                legendpos: "south", 
-            });  
-            var legendH = $("#raphael-container svg text").height() * items.length;
-            paper.setSize(paperW, paperH + legendH)
-        });
-    });
-
-    Template.breakdown.helpers({
-        diffClass: function(diff) {
-            if (diff < 0)
-                return "text-danger";
-            else
-                return "text-success";
-        }, 
-        sum: function(){
-            var sum = 0;
-            Items.find().forEach(function(item){
-                sum += item.amount;
-            });
-            return sum;
-        },
-        fairShare: function() {
-            var sum = 0;
-            Items.find().forEach(function(item){
-                sum += item.amount;
-            });
-            return sum / Persons.find().count()
-        },
-        /*
-         * Return an array with all involved persons specifying 
-         * who paid what and who has to pay what.
-         */
-        calcs: function() {
-            //Create an associative array for all involved persons, personId is Key
+       Tracker.autorun(function(){
             var persons = new Array(); 
             Persons.find().forEach(function(person) {
                return persons[person._id] = { "name": person.name, "paid": 0, "pays": 0};
@@ -285,15 +245,61 @@ if (Meteor.isClient) {
                         persons[share.person].pays += absShare;
                 });
             });
-            var result = new Array();
+            table.clear();
             Object.keys(persons).forEach( function(key) { 
-                result.push({"name": persons[key].name, 
-                             "paid": persons[key].paid, 
-                             "pays": persons[key].pays,
-                             "diff": (persons[key].paid - persons[key].pays)});
+                table.row.add([persons[key].name, 
+                               persons[key].paid.toFixed(2), 
+                               persons[key].pays.toFixed(2),
+                               (persons[key].paid - persons[key].pays).toFixed(2)]);
              });
-            return result;
+            table.draw();
+       });
+
+        // Draw pie if container rendered for the first time
+        var paperH = 300, paperW = 300
+        var paper = Raphael("raphael-container", paperW, paperH);
+        Tracker.autorun(function(){
+            var items = Items.find().fetch();
+            paper.clear();
+            var totalAmounts = [];
+            var totalItems = [];
+            items.forEach(function(item){
+                totalAmounts.push(item.amount);
+                totalItems.push(item.title + " - € " + item.amount);
+            });
+            var chart = paper.piechart(150, 150, 100, totalAmounts, {
+                legend: totalItems, 
+                legendpos: "south", 
+            });  
+            var legendH = $("#raphael-container svg text").height() * items.length;
+            paper.setSize(paperW, paperH + legendH)
+        });
+    });
+
+    Template.breakdown.helpers({
+        toFixed: function(number) {
+            return number.toFixed(2);
         },
+        diffClass: function(diff) {
+            if (diff < 0)
+                return "text-danger";
+            else
+                return "text-success";
+        }, 
+        sum: function(){
+            var sum = 0;
+            Items.find().forEach(function(item){
+                sum += item.amount;
+            });
+            return sum.toFixed(2);
+        },
+        fairShare: function() {
+            var sum = 0;
+            Items.find().forEach(function(item){
+                sum += item.amount;
+            });
+            return sum / Persons.find().count()
+        }
     })
 }
 
