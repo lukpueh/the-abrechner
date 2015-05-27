@@ -78,7 +78,7 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
 <template name="abrechner">
     <div class="well text-center" id="urlContainer">
         <span class="btn-default pointer mark-url">Select URL</span>
-        You can access this Abrechung  at: <input class="text-center" type="text" id="url" value="{{urlFor 'abrechner'}}"/>
+        You can access this Abrechung  at: <input class="text-center" type="text" id="url" value="{{host}}{{pathFor 'abrechner'}}"/>
     </div>
 
     <div class="text-center">

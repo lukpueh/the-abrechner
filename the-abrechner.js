@@ -102,6 +102,9 @@ if (Meteor.isClient) {
                 return person.name;
             else
                 return "";
+        },
+        host: function(){
+            return window.location.host;
         }
     });
 
@@ -206,9 +209,6 @@ if (Meteor.isClient) {
     });
 
 
-
-
-
     Template.breakdown.onRendered(function(){
         //Datatables
        var table = $('#breakdownTable').dataTable({
@@ -264,15 +264,22 @@ if (Meteor.isClient) {
             var totalAmounts = [];
             var totalItems = [];
             items.forEach(function(item){
-                totalAmounts.push(item.amount);
-                totalItems.push(item.title + " - € " + item.amount);
+                if (item.amount > 0) {
+                    totalAmounts.push(item.amount);
+                    totalItems.push(item.title + " - € " + item.amount);
+                }
             });
             var chart = paper.piechart(150, 150, 100, totalAmounts, {
                 legend: totalItems, 
                 legendpos: "south", 
-            });  
-            var legendH = $("#raphael-container svg text").height() * items.length;
-            paper.setSize(paperW, paperH + legendH)
+            });
+
+            var textH = $("#raphael-container svg text").height() ;
+            if (textH == 0)
+                textH = 14;
+
+            var legendH = textH * items.length;
+            paper.setSize(paperW, paperH + legendH);
         });
     });
 
