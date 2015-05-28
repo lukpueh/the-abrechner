@@ -162,7 +162,7 @@ The days of broken friendships are over. All thanks to the Urlaubs Abrechnungs M
                      <ul class="list-group">
                         {{#each shares}}
                             <li class="list-group-item">
-                                <input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">{{personNameById person}}
+                                <input class="pays-share" data-item-id="{{../_id}}" type="checkbox" name="pays" checked="{{pays}}">{{personNameById person}} {{optText ../_id}}
                             </li>
                         {{/each}}
                     </ul>

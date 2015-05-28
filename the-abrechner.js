@@ -105,7 +105,28 @@ if (Meteor.isClient) {
         },
         host: function(){
             return window.location.host;
+        },
+        optText: function(itemId) {
+            var item = Items.findOne(itemId);
+
+            if (item.amount < 0 && ! this.pays)
+                return "gets nothing from this item";
+            if (item.amount > 0 && ! this.pays)
+                return "pays nothing for this item";
+
+            var shares = item.shares;
+            var cnt = 0;
+            for (var i = 0; i < shares.length; i++)
+                if (shares[i].pays)
+                    cnt++;
+            
+            if (item.amount < 0 && this.pays)
+                return "gets " + (item.amount / cnt).toFixed(2) + " from this item";
+            if (item.amount > 0 && this.pays)
+                return "pays " + (item.amount / cnt).toFixed(2) + " for this item";
         }
+
+
     });
 
     Template.abrechner.events({
