@@ -1,0 +1,124 @@
+<html>
+<head>
+<title>Minimizing the number of payments for an Abrechnung</title>
+<!-- MathJax stuff from http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+</head>
+
+
+<body>
+<h1>Introduction</h1>
+The <em>Abrechner</em> algorithm establishes the total amount each of the debtors has to pay in order to settle with the creditors. However, it does not specify those payable amounts that result in the optimal number of transactions, and there are multiple possible types of optima we may seek. We could minimize the total number of transactions which the debtors have to execute, or minimize the number of transactions the largest creditor receives, or reward debtors with small debts by assigning them a lower number of transactions, etc. Minimizing the total number of transactions sounds pretty reasonable, so this is what we will look at.
+<p>
+
+
+
+<h1>Modeling</h1>
+Let's define a directed-graph model for a situation with $k$ nodes representing the debtors, $l$ nodes for the creditors, and directed edges $d$ whose weights model amounts of debt. The sum of edge weights for each node is the overall debt or credit as determined by the <em>Abrechner</em> algorithm. The sum-of-debt for each node shall be conserved, no matter what actual payments will be made eventually.
+<p>
+
+How many edges can the settlement graph have? First, we reason that a few types of edges can be excluded from further consideration:
+<p>
+
+<dl>
+  <dt>Proposition 1:<dd>A node is either a debtor, or a creditor, but not both.
+  <dt>Corollary 1.1:<dd>No node has debt with itself.
+  <dt>Proposition 2:<dd>Edges always start at a debtor, and end at a creditor.
+</dl>
+
+P1 formalizes the notion of having distinct node types. C1.1 emphasizes that this also rules out ``self debt'' which would result in loops in the graph, and states that $d_{ii}=0$.
+<p>
+From P2 we learn that edges must follow a specific direction in this graph. Together with P1 above, we find  
+<p>
+
+<dl>
+  <dt>Corollary 2.1:<dd>There are no inter-debtor debts, and no creditor is in debt with another creditor.
+</dl>
+
+To illustrate C2.1, suppose that there is a node who is a debtor that receives payments from other debtors in order to pay off its own debt (a). This means that it is also a creditor. However, we can remove any incoming payments to this node if we reduce its outgoing payments by the same amount, so as to conserve the sum-of-debts of this node. Any payment that this node neither receives nor has to pay, the originally paying node can direct to the appropriate creditor instead, thereby changing neither the paying node's nor the creditor's balance. If after following this rule there are still incoming payments despite all outgoing payment edges have been removed, then this node is a creditor (not shown here). If however there are only outgoing edges left, then the node is a debtor (b).
+<p>
+
+<pre>
+(a) K1 ---d1---> KL2 ---d2---> L1
+
+(b) K1 ---d3-----------------> L1 
+                  K2 ---d4---/
+
+Making a debtor out of a creditor+debtor
+</pre>
+<p>
+
+
+
+<h1>First bounds</h1>
+Given these propositions, we can argue that the directed graph representing the debt-credit relationship of the <em>Abrechner</em> problem is <em>bipartite</em>. For example, we might arrange all of the debtors in a column on the left, all creditors on the right, and then have edges only between these two columns of nodes. This also gives us two bounds on the number of payments required. The minimum number of payments is $max(k,l)$, i.e. the greater of the number of debtors and the number of creditors. This follows intuition, in that every debtor has to pay their debt, and every creditor should receive what they paid in advance. Furthermore, the complete bipartite graph in which every node in one column shares an edge with every node in the other column has $k \cdot l$ edges, representing the maximum number of payments there could be.
+<p>
+
+
+
+<h1>Pruning edges</h1>
+We shall now devise an algorithm that <em>prunes edges</em> from the complete bipartite graph in $\mathcal{O}\left((k+l)^4\right)$ steps. We will show the general idea (without loss of generality) using a very simple debt graph. Both creditors $L1,L2$ receive payments from both debtors $K1, K2$. Under which conditions can we simplify the graph?
+
+<pre>
+K1 ---d11---> L1 <---d21--- K2
+  \---d12---> L2 <---d22---/
+</pre>
+
+We will assume that the debtor nodes are sorted so that $d_{12} \ge d_{21}$. The initial debt matrix that corresponds to the figure has that
+<p>
+
+$$\mathbf{D} = \left[
+\begin{matrix}
+d_{11} & d_{12}\\
+d_{21} & d_{22}
+\end{matrix}\right].$$
+
+Now, we remove edge $d_{21}$ while ensuring that the total sum-of-debts (i.e. row and column sums) are conserved,
+
+$$\mathbf{D^*} = \left[
+\begin{matrix}
+d_{11} + d_{22}  &  d_{12} - d_{21}\\
+0 & d_{22} + d_{21}
+\end{matrix}\right].$$
+
+Clearly, we just eliminated one payment from the complete bipartite graph!
+<p>
+
+This pruning technique might be applied to any pair of $(d_{gh},d_{ij})$ in the $(k \times l)$ incidence matrix that connects debtors to creditors through debt edge weights. Note that this approach compares $\mathcal{O}\left((k+l)^2\right)$ weights to $\mathcal{O}\left((k+l)^2\right)$ others, yielding an overall number of $\mathcal{O}\left((k+l)^4\right)$ steps.
+
+
+
+<h1>A greedy algorithm</h1>
+A natural complementary approach to constructing the complete graph and then pruning edges might be to allocate payments one-by-one in the hope to find a reasonable assignment. The greedy algorithm presented here tries just that, and <strong>(probably, needs proof!)</strong> stays within a factor of 2 of the optimal solution.
+<p>
+
+Algorithm 1:
+<ol>
+  <li>Sort both the credit and debit amounts.
+  <li>While payments are not settled:
+  <ol>
+    <li>Assign the largest debt to the largest credit.
+    <li>Sort the remaining credit and debit amounts.
+  </ol>
+</ol>
+
+It's easy to construct a degnerate example for this simple algorithm <strong>(generalize!)</strong>: Make the debts 8, 7, 6, 5, 4 and the credits 9, 8, 7, 6. The algorithm now assigns payments $(9-8), (8-7), (7-6), (6-5)$, yielding 4 remainders of 1 each. Lastly, the four remainders are payed by the remaining debt of 4: $4 \times (1-1)$. This causes $2l=8$ payments, when only $k=5$ would have been necessary if identical debt and credit amounts would have been matched. The competitive ratio of this algorithm appears <strong>(prove!)</strong> to be given by ${2l \over k} = {2l \over {l+1}}$ which approaches 2 as $l,k\rightarrow\infty$.
+<p>
+Thus, an assignment found by this greedy algorithm <strong>(probably)</strong> requires at most twice as many payments overall as the optimal assignment does.
+<p>
+
+
+<h1>Open questions</h1>
+<ul>
+  <li>Does the above represent the worst case? How could we prove it does / doesn't?
+  <li>What other simple greedy strategies could we try? Assign the smallest debts to the smallest credits first? Smallest debts to largest credits?
+  <li>Randomization? Rounding? PTAS?
+</ul>
+
+</body>
+</html>
