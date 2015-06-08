@@ -1,23 +1,11 @@
 <head>
     <title>The Urlaubs Abrechnungs Machine</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
-
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 </head>
 
 <template name="main">
+    <head>
+    </head>
     <div class="container">
         <div class="page-header text-center">
             <h1>
@@ -30,8 +18,9 @@
         <div class="page-body">
             {{> yield}}
         </div>
-        <div class="page-footer text-center small">
+        <div class="page-footer text-center">
             <a href="" data-toggle="modal" data-target="#disclaimerModal">Disclaimer</a>
+            {{> socialMedia}}
         </div>
 
 
@@ -75,9 +64,10 @@ when it comes to partition of expenses...</p>
 </template>  
 
 <template name="abrechner">
-    <div class="well text-center" id="urlContainer">
-        <span class="btn-default pointer mark-url">Select URL</span>
+    <div class=" well text-center" id="urlContainer">
+        <span class="btn-default pointer mark-url">Select</span>
         You can access this Abrechung  at: <input class="text-center" type="text" id="url" value="{{host}}{{pathFor 'abrechner'}}"/>
+
     </div>
 
     <div class="text-center">
@@ -171,9 +161,15 @@ when it comes to partition of expenses...</p>
         </div>
         {{> breakdown}}
     {{/if}}
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirm-delete">
-        Delete Abrechnung
-    </button>
+    <div class="container-footer">
+        <a href="{{sendAbrechner}}" class="btn btn-sm btn-primary">
+            <span class="glyphicon glyphicon-send" title="Send as Email"></span>
+            Send as Email
+        </a>
+        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#confirm-delete">
+            <span class="glyphicon glyphicon-trash" title="Delete Abrechnung"></span>
+        </button>
+    </div>
     <!-- Confirm Delete Abrechnung -->
     <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
@@ -186,7 +182,7 @@ when it comes to partition of expenses...</p>
             <p>Are you sure that you want to delete this Abrechnung? You will never ever ever ever be able to access it again. Never!</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="delete-abrechnung btn btn-danger btn-lg" onCLick="$('#confirm-delete').modal('hide')">Delete forever</button>
+            <button type="button" class="delete-abrechnung btn btn-danger" onCLick="$('#confirm-delete').modal('hide')">Delete Abrechnung, Forever!</button>
           </div>
         </div>
       </div>
@@ -235,4 +231,12 @@ when it comes to partition of expenses...</p>
         Oops, we could not find anything here. Maybe you want to 
         <a href="{{pathFor 'home'}}" alt="create new abrechnung">create a new Abrechnung</a>?
     </p>
+</template>
+
+<template name="socialMedia">
+    <div class="social-container">
+        <a href="#" data-type="twitter" class="social fa fa-twitter" title="Share on Twitter"></a>
+        <a href="#" data-type="facebook" class="social fa fa-facebook" title="Share on Facebook"></a>
+        <a href="#" data-type="googleplus" class="social fa fa-google-plus" title="Share on Google+"></a>
+    </div>
 </template>

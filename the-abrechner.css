@@ -4,14 +4,17 @@
 
 body {
     background: url(body.png); 
-    text-shadow:1px 1px 1px #fff !important;
     font-family: 'Pathway Gothic One', sans-serif !important;
 } 
 .container {
     margin: 15px auto 0;
     max-width:600px;
-    font-size:18px;
+    /*font-size:18px;*/
     color:#555;
+}
+
+.container-footer {
+    text-align: right;
 }
 
 .page-header {
@@ -20,6 +23,10 @@ body {
     top:-35px !important;
     position: relative;
     border-bottom: 1px dotted lightgray !important; 
+}
+
+.page-header, .modal-header {
+    text-shadow:1px 1px 1px #fff !important;
 }
 
 .page-body {
@@ -36,11 +43,11 @@ body {
 }
 
 .page-footer {
-    padding: 15px;
+    padding: 10px;
     color:#ccc;
 }
 
-label, input, button.btn, select {
+label, input, select {
     width: 100%;
 }
 
@@ -142,30 +149,29 @@ table.dataTable > tbody > tr {
   border-radius: 0 4px 0 4px;
 }
 
-.modal-dialog {
+.modal-header {
+    background: url(body.png); 
 }
-
-.modal-body {
-    background: #fafafa;
-}
-
 .modal-header .close {
     margin-top:6px !important; /* No need for this */
 }
-
+.modal-footer {
+    margin: 0 15px;
+    padding: 15px 0;
+    border-top: 1px dotted lightgray !important; 
+}
 .modal-content h3 {
     border:none;
     padding:0;
 }
-
 .modal-content {
-    background: url(body.png); 
     overflow:hidden;
+    background: #fafafa;
 }
-
 .modal-content p:last-child {
     margin-bottom:0;
 }
+
 
 table.dataTable > tbody > tr {
     background-color: transparent !important; /* No need for this */
@@ -194,6 +200,18 @@ table.dataTable > tfoot > tr > th {
 
 svg tspan {
     font-family: 'Pathway Gothic One', sans-serif !important;
-    font-size:18px;
+    font-size:14px;
     fill:#555;
+}
+
+.social-container a {
+    margin: 15px 20px;
+    text-decoration: none;
+    color: #ccc;
+    font-size: 1.6em;
+    font-weight: bold;
+    text-shadow: 0px 2px 3px #fff;
+}
+.social-container a:hover {
+    color:#333;
 }

@@ -56,6 +56,49 @@ if (Meteor.isClient) {
             $("#email").attr("href", "mailto:" + encryptedemail_id42);
     });
 
+    Template.socialMedia.events({
+
+        "click .social" : function(event){
+            var type  = $(event.target).data('type');
+            if (type == "twitter" || type == "facebook" || type == "googleplus") {
+
+                //The data
+                var url = window.location.href;
+
+                // title depending on current route
+                var where = Router.current().route.getName();
+                var title = "";
+                if (where == 'home') {
+                    title = "The Urlaubs Abrechnungs Machine";
+                } else if (where == 'abrechner') {
+                    title = this.title;
+                }
+
+                //Sharers
+                var link = "", width = "", height = "";
+                if (type == "twitter") {
+                    link = 'https://twitter.com/share?url=' + url + '&text=' + title,
+                    width = 685, height = 500;
+                }
+                if (type == "facebook") {
+                    link ='https://www.facebook.com/sharer/sharer.php?u=' + url,
+                    width = 626, height = 436;
+                }
+                if (type == "googleplus") {
+                    link = 'https://plus.google.com/share?url=' + url,
+                    width =  600, height = 600;
+                }
+                //Share!!
+                var left = (window.innerWidth/2) - (width/2),
+                top = (window.innerHeight/2) - (height/2);
+                window.open(link, '', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + width + ', height=' + height + ', top=' + top + ', left=' + left);
+            } else {
+                console.log("Where do you want to share today?!")
+            }
+
+        }
+    });
+
     Template.home.events({
         "submit .new-abrechner": function(event) {
             var form = event.target;
@@ -124,9 +167,14 @@ if (Meteor.isClient) {
                 return "gets " + (item.amount / cnt).toFixed(2) + " from this item";
             if (item.amount > 0 && this.pays)
                 return "pays " + (item.amount / cnt).toFixed(2) + " for this item";
+        },
+        sendAbrechner: function(){
+            return "mailto:?subject=" + encodeURI('Let\'s use the Urlaubs Abrechnungs Machine') + 
+                   "&body=" + 
+                   encodeURI(this.title) + "%0D%0A" +
+                   encodeURI(this.description) + "%0D%0A" + "%0D%0A" +
+                   encodeURI(window.location.href);
         }
-
-
     });
 
     Template.abrechner.events({
@@ -222,7 +270,6 @@ if (Meteor.isClient) {
             Meteor.call("removeAbrechnung", link, abrechnungsId);
             Router.go('home');
         },
-
         "click .mark-url": function(event) {
             $("#url").focus();
             $("#url").select();
