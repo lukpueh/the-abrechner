@@ -207,12 +207,19 @@ svg tspan {
     fill:#555;
 }
 
+.social-container {
+    border-bottom: 1px dotted lightgray;
+    margin-bottom: 35px;
+}
+
 .social-container a {
     margin: 15px 20px;
     text-decoration: none;
     color: #ccc;
     font-size: 1.5em;
+    text-shadow: 1px 1px 1px #fff;
 }
+
 .social-container a:hover {
-    color:#333;
+    color: #666;
 }
