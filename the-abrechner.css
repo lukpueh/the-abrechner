@@ -14,7 +14,8 @@ body {
 }
 
 .container-footer {
-    text-align: right;
+    border-bottom: 1px dotted lightgray;
+    padding-top: 15px;
 }
 
 .page-header {
@@ -85,6 +86,10 @@ input[type="submit"] {
 .item a, .item a:hover, .item a:active, .item a:visited, .item a:focus {
     color:#333;
     text-decoration:none;
+}
+
+.icon-text {
+    margin-left: 7px;
 }
 
 .text-light {
@@ -174,6 +179,9 @@ table.dataTable > tbody > tr {
 
 .form-control {
     font-size:1em;
+    font-weight: normal;
+}
+table.dataTable thead th, table.dataTable tfoot th {  
     font-weight: normal;
 }
 

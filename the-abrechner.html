@@ -11,16 +11,17 @@
             <h1>
                 <div class="row">
                     <div id="logo" class="col-xs-12 col-sm-6"><span class="glyphicon glyphicon-barcode"></span></div>
-                    <div class="col-xs-12">The Urlaubs Abrechnungs Machine</div>
+                    <div class="col-xs-12 hidden-print">The Urlaubs Abrechnungs Machine</div>
                 </div>
             </h1>
         </div>
         <div class="page-body">
             {{> yield}}
         </div>
-        <div class="page-footer text-center">
+        <div class="page-footer text-center hidden-print">
             {{> socialMedia}}
-            <div class="small"><a href="" data-toggle="modal" data-target="#disclaimerModal">Disclaimer</a></div>
+            <div class="small">
+                <a href="http://abrechner.abteil.org" target="_blank">&copy; abrechner.abteil.org</a> | <a href="" data-toggle="modal" data-target="#disclaimerModal">Disclaimer</a></div>
         </div>
 
 
@@ -64,10 +65,9 @@ when it comes to partition of expenses...</p>
 </template>  
 
 <template name="abrechner">
-    <div class=" well text-center" id="urlContainer">
+    <div class="well text-center hidden-print" id="urlContainer">
         <span class="btn-default pointer mark-url">Select</span>
         You can access this Abrechung  at: <input class="text-center" type="text" id="url" value="{{host}}{{pathFor 'abrechner'}}"/>
-
     </div>
 
     <div class="text-center">
@@ -76,8 +76,8 @@ when it comes to partition of expenses...</p>
     </div>
 
 
-    <h3>Add the people that share their expenses…</h3>
-    <form class="new-person" method="post">
+    <h3 class="hidden-print">Add the people that share their expenses…</h3>
+    <form class="new-person hidden-print" method="post">
         <div class="form-group">
             <div class="row">
                 <div class="col-sm-9">
@@ -92,15 +92,15 @@ when it comes to partition of expenses...</p>
         </div>
     </form>
         
-    <div class="form-group">
+    <div class="form-group hidden-print">
     {{#each personsForAbrechnung}}
         <p class="padded-item-horizontal person"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>{{name}} <span class="glyphicon glyphicon-remove delete-person text-danger pull-right pointer" aria-hidden="true"></span></p>
     {{/each}}
     </div>
 
     {{#if hasPersons}}
-        <h3>Add the items that were bought and the payer…</h3>
-        <form class="new-item" method="post">
+        <h3 class="hidden-print">Add the items that were bought and the payer…</h3>
+        <form class="new-item hidden-print" method="post">
             <div class="form-group">
                 <div class="row">
                     <div class="col-sm-3">
@@ -161,14 +161,18 @@ when it comes to partition of expenses...</p>
         </div>
         {{> breakdown}}
     {{/if}}
-    <div class="container-footer">
-        <a href="{{sendAbrechner}}" class="btn btn-sm btn-primary">
-            <span class="glyphicon glyphicon-send" title="Send as Email"></span>
-            Send as Email
-        </a>
-        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#confirm-delete">
-            <span class="glyphicon glyphicon-trash" title="Delete Abrechnung"></span>
-        </button>
+    <div class="container-footer hidden-print">
+        <div class="btn-group btn-group-justified">
+            <a href="{{sendAbrechner}}" class="btn btn-primary">
+                <span class="glyphicon glyphicon-send" title="Send as Email"></span><span class="hidden-xs icon-text">Share via Email</span>
+            </a>
+            <a href="javascript:window.print()" class="btn btn-info">
+                <span class="glyphicon glyphicon-print" title="Print"></span><span class="hidden-xs icon-text">Print</span>
+            </a>
+            <a href="" class="btn btn-danger" data-toggle="modal" data-target="#confirm-delete">
+                <span class="glyphicon glyphicon-trash" title="Delete Abrechnung"></span><span class="hidden-xs icon-text">Delete Abrechnung</span>
+            </a>
+        </div>
     </div>
     <!-- Confirm Delete Abrechnung -->
     <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
@@ -234,7 +238,7 @@ when it comes to partition of expenses...</p>
 </template>
 
 <template name="socialMedia">
-    <div class="social-container">
+    <div class="social-container hidden-print">
         <a href="#" data-type="twitter" class="social fa fa-twitter" title="Share on Twitter"></a>
         <a href="#" data-type="facebook" class="social fa fa-facebook" title="Share on Facebook"></a>
         <a href="#" data-type="googleplus" class="social fa fa-google-plus" title="Share on Google+"></a>
