@@ -6,6 +6,7 @@ body {
     background: url(body.png); 
     font-family: 'Pathway Gothic One', sans-serif !important;
 } 
+
 .container {
     margin: 15px auto;
     max-width:600px;
@@ -14,7 +15,7 @@ body {
 }
 
 .container-footer {
-    border-bottom: 1px dotted lightgray;
+    border-top: 1px dotted lightgray;
     padding-top: 15px;
 }
 
@@ -231,4 +232,20 @@ svg tspan {
 
 .social-container a:hover {
     color: #666;
+}
+
+@media print {
+    .container {
+        font-size: 12px;
+    }
+
+    .page-header {
+        margin-bottom: -75px !important;
+        padding-bottom: 0;
+        border-bottom: none !important; 
+    }
+
+    #abrechnerTitle {
+        margin-bottom: 25px;
+    }
 }
