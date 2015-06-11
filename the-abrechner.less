@@ -1,0 +1,291 @@
+
+// Improts
+
+// Google Font
+@import url(http://fonts.googleapis.com/css?family=Pathway+Gothic+One&subset=latin,latin-ext);
+
+// HTML Elements 
+
+body {
+    background: url(body.png); 
+    font-family: 'Pathway Gothic One', sans-serif;
+}
+
+label, input, select {
+    width: 100%;
+}
+
+input[type="checkbox"] {
+    margin-right: 12px;
+    width:auto;
+}
+
+input[type="submit"] {
+    background-color: #f5f5f5;
+    color:#333;
+}
+
+h1 {
+    color:lightgray;
+}
+h3 {
+    border-top:1px dotted lightgray;
+    padding-top: 10px;
+    color:lightgray;
+}
+
+// Bootstrap overrides
+
+.container {
+    margin: 15px auto;
+    max-width:600px;
+    font-size:16px;
+    color:#555;
+}
+
+.container-footer {
+    border-top: 1px dotted lightgray;
+    padding-top: 15px;
+}
+
+.form-control {
+    font-weight: normal;
+}
+
+.modal-header {
+    background: url(body.png); 
+    .close {
+        margin-top:6px;
+    }
+}
+
+.modal-footer {
+    margin: 0 15px;
+    padding: 15px 0;
+    border-top: 1px dotted lightgray;
+}
+
+.modal-content {
+    overflow:hidden;
+    background: #fafafa;
+    h3 {
+        border:none;
+        padding:0;
+    }
+    p:last-child {
+        margin-bottom:0;
+    }
+}
+
+.page-header {
+    margin-bottom: 0 !important;
+    margin-top:0 !important;
+    top:-35px !important;
+    position: relative;
+    border-bottom: 1px dotted lightgray; 
+}
+
+.page-header,
+.modal-header,
+.page-footer {
+    text-shadow:1px 1px 1px #fff;
+}
+
+.page-body {
+    -webkit-box-shadow: 0 1px 3px 0px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow:    0 1px 3px 0px rgba(0, 0, 0, 0.4);
+    box-shadow:         0 1px 3px 0px rgba(0, 0, 0, 0.4);   
+    background: #fafafa; 
+    padding:15px;
+    border-radius: 4px;
+    p:last-child {
+        margin-bottom:0;
+    }
+}
+
+.page-footer {
+    padding: 10px;
+    color:#ccc;
+}
+
+// Datatables overrides
+
+table.dataTable  {
+    > thead {
+        > tr {
+
+        }
+    }
+    > tbody {
+        > tr {
+            background-color: transparent;
+            &:first-child > td {
+                border-top: none;
+            }
+            > td {
+                &:first-child {
+                    padding-left:0px;
+                }
+                &:last-child {
+                    padding-right:0px;
+                }
+            }
+        }
+    }
+    > thead,
+    > tfoot {
+        > tr > th {
+            font-weight: normal;
+            padding:10px;
+            &:first-child {
+                padding-left:0px;
+            }
+            &:last-child {
+                padding-right:0px;
+            }
+        }
+    }
+    > tfoot {
+        > tr > th {
+            font-size: 1.5em;
+        }
+    }
+}
+
+// SVG
+
+svg tspan {
+    font-family: 'Pathway Gothic One', sans-serif !important;
+    font-size:14px;
+    fill:#555;
+}
+
+// Domestic utilities
+
+.break-word {
+    word-wrap: break-word;
+}
+
+.icon-text {
+    margin-left: 7px;
+}
+
+.overflow-hidden {
+    overflow:hidden;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.text-light {
+    color:lightgray;
+}
+
+.padded-item-horizontal {
+    padding-left:12px;
+    padding-right:12px;
+}
+
+.padded-item-vertical {
+    padding-top:6px;
+    padding-bottom:6px;
+}
+
+// Domestic classes
+
+.item {
+    .panel-heading {
+        padding:0;
+    }
+
+    .item-inner {
+        padding: 10px 15px;
+        .glyphicon {
+            padding-top: 2px;
+            margin-left: 10px;
+        }
+    }
+
+    a {
+        &:hover,
+        &:active,
+        &:visited,
+        &:focus {
+            color:#333;
+            text-decoration:none;
+        }
+    }
+}
+
+.mark-url {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px 8px;
+  font-size: 0.9em;
+  color: #767676;
+  background-color: #fff;
+  border-left: 1px solid #e1e1e8;
+  border-bottom: 1px solid #e1e1e8;
+  border-radius: 0 4px 0 4px;
+}
+
+.social-container {
+    border-bottom: 1px dotted lightgray;
+    margin-bottom: 35px;
+    a {
+        margin: 15px 20px;
+        text-decoration: none;
+        color: #ccc;
+        font-size: 1.5em;
+        text-shadow: 1px 1px 1px #fff;
+        &:hover {
+            color: #666;
+        }
+    }
+}
+
+.person .glyphicon.glyphicon-user {
+    padding-right: 6px;
+}
+.person .delete-person {
+    padding-top: 4px;
+}
+
+// Lon lon elements
+
+#logo {
+     font-size:4em;
+     color:#ddd;
+}
+
+#urlContainer {
+    position: relative;
+    padding: 10px 50px;
+}
+#url {
+    border: 0;
+    background: inherit
+}
+#url:focus {
+    background-color: white;
+}
+
+// Print media queries
+
+@media print {
+    .container {
+        font-size: 12px;
+    }
+
+    .page-header {
+        margin-bottom: -75px !important;
+        padding-bottom: 0;
+        border-bottom: none !important; 
+    }
+
+    #abrechnerTitle {
+        margin-bottom: 25px;
+    }
+}
