@@ -1,6 +1,7 @@
 /* CSS declarations go here */
 
 /* latin-ext */
+@import url(http://fonts.googleapis.com/css?family=Pathway+Gothic+One&subset=latin,latin-ext);
 
 body {
     background: url(body.png); 
