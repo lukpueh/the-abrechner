@@ -1,14 +1,11 @@
 
 // Improts
 
-// Google Font
-@import url(http://fonts.googleapis.com/css?family=Pathway+Gothic+One&subset=latin,latin-ext);
-
 // HTML Elements 
 
 body {
     background: url(body.png); 
-    font-family: 'Pathway Gothic One', sans-serif;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
 label, input, select {
@@ -155,7 +152,7 @@ table.dataTable  {
 // SVG
 
 svg tspan {
-    font-family: 'Pathway Gothic One', sans-serif !important;
+    font-family: 'Yanone Kaffeesatz', sans-serif !important;
     font-size:14px;
     fill:#555;
 }
@@ -199,12 +196,24 @@ svg tspan {
         padding:0;
     }
 
-    .item-inner {
+    .item-heading-inner {
         padding: 10px 15px;
         .glyphicon {
             padding-top: 2px;
             margin-left: 10px;
         }
+    }
+    .item-heading-link {
+        display: block;
+    }
+    .list-group-item {
+        padding: 0
+    }
+    .item-share-label {
+        padding: 10px 15px;
+        cursor: pointer;
+        margin-bottom: 0;
+        font-weight: normal;
     }
 
     a {
