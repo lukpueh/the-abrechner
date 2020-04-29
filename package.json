@@ -7,7 +7,7 @@
   "dependencies": {
     "@babel/runtime": "^7.1.5",
     "eve": "^0.5.4",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "meteor-node-stubs": "^0.3.2"
   }
 }
